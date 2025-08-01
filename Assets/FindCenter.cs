@@ -11,5 +11,6 @@ public class FindCenter : MonoBehaviour
         float avgPointY = (parts[0].position.y + parts[1].position.y + parts[2].position.y + parts[3].position.y) / 4;
         
         transform.position = Vector3.Lerp(transform.position, new Vector3(avgPointX, avgPointY, transform.position.z), Time.deltaTime);
+        // transform.position = Vector3.Lerp(transform.position, new Vector3(avgPointX, transform.position.y, transform.position.z), Time.deltaTime);
     }
 }

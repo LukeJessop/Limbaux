@@ -6,13 +6,16 @@ using UnityEngine;
 
 public class FollowMouse : MonoBehaviour
 {
-    public Transform[] centers = new Transform[2];
+    public Transform center;
     private int activeCenter = 0;
-    private float xRadius = 1;
-    private float yRadius = .8f;
+    public float xRadius = 1;
+    public float yRadius = .8f;
 
     public GameObject[] parts = new GameObject[4];
     public int currentPart;
+    private int prevPart;
+    
+    public GameObject[] bones = new GameObject[4];
 
     private float currentX;
     public float senseX = .05f;
@@ -21,25 +24,31 @@ public class FollowMouse : MonoBehaviour
 
     private void Start()
     {
+        for (int i = 0; i < parts.Length; i++)
+        {
+            parts[i].transform.position = bones[i].transform.position;
+            
+        }
         currentX = parts[currentPart].transform.position.x;
         currentY = parts[currentPart].transform.position.y;
-        
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
     }
 
     void Update()
     {
-        Debug.Log(Input.GetAxisRaw("Mouse X"));
-
         SwapPart();
         currentX += Input.GetAxisRaw("Mouse X") * senseX;
-        currentY += Input.GetAxisRaw("Mouse Y") * senseY;
-        var clampedX = Mathf.Clamp(currentX, centers[activeCenter].position.x - xRadius,
-            centers[activeCenter].position.x + xRadius);
-        var clampedY = Mathf.Clamp(currentY,
-            centers[activeCenter].position.y - yRadius, centers[activeCenter].position.y + yRadius);
+        currentY += Input.GetAxisRaw("Mouse Y") * senseY; //something here is breaking the logic, it may be using worldspace/localspace wrong
+        
+        var clampedX = Mathf.Clamp(currentX, center.position.x - xRadius, center.position.x + xRadius);
+        var clampedY = Mathf.Clamp(currentY, center.position.y - yRadius, center.position.y + yRadius);
+        Debug.DrawLine(new Vector3(center.position.x - xRadius, center.position.y - yRadius, 0f), new Vector3(center.position.x + xRadius, center.position.y - yRadius, 0f), Color.red, .05f);
+        Debug.DrawLine(new Vector3(center.position.x - xRadius, center.position.y + yRadius, 0f), new Vector3(center.position.x + xRadius, center.position.y + yRadius, 0f), Color.red, .05f);
+        Debug.DrawLine(new Vector3(center.position.x - xRadius, center.position.y - yRadius, 0f), new Vector3(center.position.x - xRadius, center.position.y + yRadius, 0f), Color.blue, .05f);
+        Debug.DrawLine(new Vector3(center.position.x + xRadius, center.position.y - yRadius, 0f), new Vector3(center.position.x + xRadius, center.position.y + yRadius, 0f), Color.blue, .05f);
+        
         parts[currentPart].transform.position = new Vector3(clampedX, clampedY, 0f);
     }
 
@@ -48,27 +57,42 @@ public class FollowMouse : MonoBehaviour
         //for dev testing purposes, this will switch the controlled limb!
         if (Input.GetKeyDown(KeyCode.Alpha1)) //right hand
         {
+            prevPart = currentPart;
             currentPart = 0;
             yRadius = .8f;
             activeCenter = 0;
+            OnDrawGizmosSelected();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2)) //left hand
         {
+            prevPart = currentPart;
             currentPart = 1;
             yRadius = .8f;
             activeCenter = 0;
+            OnDrawGizmosSelected();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3)) //right leg
         {
+            prevPart = currentPart;
             currentPart = 2;
             yRadius = 1f;
             activeCenter = 1;
+            OnDrawGizmosSelected();
         }
         else if (Input.GetKeyDown(KeyCode.Alpha4)) //left leg
         {
+            prevPart = currentPart;
             currentPart = 3;
             yRadius = 1f;
             activeCenter = 1;
+            OnDrawGizmosSelected();
         }
+
+        
+    }
+    
+    public void OnDrawGizmosSelected()
+    {
+        
     }
 }
