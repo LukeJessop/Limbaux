@@ -18,8 +18,8 @@ public class FollowCam : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        target = controllerScript.parts[controllerScript.currentPart];
+        target = controllerScript.bones[controllerScript.currentPart];
         var targetPos = new Vector3(target.transform.position.x, target.transform.position.y, transform.position.z);
-        transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * 10);
     }
 }
