@@ -4,13 +4,21 @@ using UnityEngine;
 
 public class FindCenter : MonoBehaviour
 {
-    public Transform[] parts = new Transform[4];
+    public Transform[] parts = new Transform[2];
+    private float avgX;
+    private float avgY;
+    
     void Update()
     {
-        float avgHeightArms = (parts[0].position.y + parts[1].position.y) / 2;
-        float avgHeightLegs = (parts[2].position.y + parts[3].position.y) / 2;
+        avgX = (parts[0].position.x + parts[1].position.x) / 2f;
+        avgY = (parts[0].position.y + parts[1].position.y) / 2f;
         
-        // transform.position = Vector3.Lerp(transform.position, new Vector3(avgPointX, avgPointY, transform.position.z), Time.deltaTime);
-        // transform.position = Vector3.Lerp(transform.position, new Vector3(avgPointX, transform.position.y, transform.position.z), Time.deltaTime);
+        
+        
+        float distance = Vector2.Distance(parts[0].position, parts[1].position);
+        
+        transform.rotation = Quaternion.LookRotation(parts[0].position - parts[1].position, Vector3.up);
+        transform.localScale = new Vector3(.1f, .1f, Mathf.Clamp(distance, .2f, 1f));
+        transform.position = Vector3.Lerp(transform.position, new Vector3(avgX, avgY, transform.position.z), Time.deltaTime * 200f);
     }
 }

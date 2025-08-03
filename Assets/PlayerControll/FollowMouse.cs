@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class FollowMouse : MonoBehaviour
 {
-    public Transform[] centers = new Transform[2];
+    public Transform[] centers = new Transform[3];
     private int activeCenter = 0;
     public float xRadius = 1;
     public float yRadius = .8f;
@@ -17,9 +17,9 @@ public class FollowMouse : MonoBehaviour
 
     public GameObject[] bones = new GameObject[4];
 
-    private float currentX;
+    private float x;
     public float senseX = .05f;
-    private float currentY;
+    private float y;
     public float senseY = .005f;
 
     private void Start()
@@ -29,8 +29,8 @@ public class FollowMouse : MonoBehaviour
             parts[i].transform.position = bones[i].transform.position;
         }
 
-        currentX = parts[currentPart].transform.position.x;
-        currentY = parts[currentPart].transform.position.y;
+        x = parts[currentPart].transform.position.x;
+        y = parts[currentPart].transform.position.y;
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -39,48 +39,92 @@ public class FollowMouse : MonoBehaviour
     void Update()
     {
         SwapPart();
-        currentX += Input.GetAxisRaw("Mouse X") * senseX;
-        currentY += Input.GetAxisRaw("Mouse Y") * senseY;
+        x += Input.GetAxisRaw("Mouse X") * senseX;
+        y += Input.GetAxisRaw("Mouse Y") * senseY;
 
         if (currentPart > 1) //legs are being controlled
         {
             yRadius = .8f;
-            var clampedX = Mathf.Clamp(currentX, centers[0].position.x - xRadius, centers[0].position.x + xRadius);
-            var clampedY = Mathf.Clamp(currentY, centers[0].position.y, centers[0].position.y + yRadius);
-            
+            var centerPos = centers[0].position;
+            var Xmin = centerPos.x - xRadius;
+            var Xmax = centerPos.x + xRadius;
+            var Ymin = centerPos.y - yRadius;
+            var Ymax = centerPos.y + yRadius;
+            if (x > Xmax)
+            {
+                x = Xmax;
+            }
+            else if (x < Xmin)
+            {
+                x = Xmin;
+            }
+            else if (y > Ymax)
+            {
+                y = Ymax;
+            }
+            else if (y < Ymin)
+            {
+                y = Ymin;
+            }
+
             //creates a border to show the bounds of the controllers
-            Debug.DrawLine(new Vector3(centers[0].position.x - xRadius, centers[0].position.y - yRadius, 0f),
-                new Vector3(centers[0].position.x + xRadius, centers[0].position.y - yRadius, 0f), Color.red, .05f);
-            Debug.DrawLine(new Vector3(centers[0].position.x - xRadius, centers[0].position.y + yRadius, 0f),
-                new Vector3(centers[0].position.x + xRadius, centers[0].position.y + yRadius, 0f), Color.red, .05f);
-            Debug.DrawLine(new Vector3(centers[0].position.x - xRadius, centers[0].position.y - yRadius, 0f),
-                new Vector3(centers[0].position.x - xRadius, centers[0].position.y + yRadius, 0f), Color.blue, .05f);
-            Debug.DrawLine(new Vector3(centers[0].position.x + xRadius, centers[0].position.y - yRadius, 0f),
-                new Vector3(centers[0].position.x + xRadius, centers[0].position.y + yRadius, 0f), Color.blue, .05f);
-            // parts[currentPart].transform.position = new Vector3(clampedX, clampedY, 0f);
-            parts[currentPart].transform.Translate(new Vector3(clampedX, clampedY, 0f));
+            Debug.DrawLine(
+                new Vector3(Xmin, Ymin, 0f),
+                new Vector3(Xmax, Ymin, 0f), Color.red, .05f);
+            Debug.DrawLine(
+                new Vector3(Xmin, Ymax, 0f),
+                new Vector3(Xmax, Ymax, 0f), Color.red, .05f);
+            Debug.DrawLine(
+                new Vector3(Xmin, Ymin, 0f),
+                new Vector3(Xmin, Ymax, 0f), Color.blue, .05f);
+            Debug.DrawLine(
+                new Vector3(Xmax, Ymin, 0f),
+                new Vector3(Xmax, Ymax, 0f), Color.blue, .05f);
+
+            parts[currentPart].transform.position = new Vector3(x, y, 0f);
         }
         else //arms being controlled
         {
             xRadius = .85f;
             yRadius = .65f;
-            var clampedX = Mathf.Clamp(currentX, centers[1].position.x - xRadius, centers[1].position.x + xRadius);
-            var clampedY = Mathf.Clamp(currentY, centers[1].position.y - yRadius, centers[1].position.y + yRadius);
-            
-            //creates a border to show the bounds of the controllers
-            Debug.DrawLine(new Vector3(centers[1].position.x - xRadius, centers[1].position.y - yRadius, 0f),
-                new Vector3(centers[1].position.x + xRadius, centers[1].position.y - yRadius, 0f), Color.red, .05f);
-            Debug.DrawLine(new Vector3(centers[1].position.x - xRadius, centers[1].position.y + yRadius, 0f),
-                new Vector3(centers[1].position.x + xRadius, centers[1].position.y + yRadius, 0f), Color.red, .05f);
-            Debug.DrawLine(new Vector3(centers[1].position.x - xRadius, centers[1].position.y - yRadius, 0f),
-                new Vector3(centers[1].position.x - xRadius, centers[1].position.y + yRadius, 0f), Color.blue, .05f);
-            Debug.DrawLine(new Vector3(centers[1].position.x + xRadius, centers[1].position.y - yRadius, 0f),
-                new Vector3(centers[1].position.x + xRadius, centers[1].position.y + yRadius, 0f), Color.blue, .05f);
+            var centerPos = centers[1].position;
+            var Xmin = centerPos.x - xRadius;
+            var Xmax = centerPos.x + xRadius;
+            var Ymin = centerPos.y - yRadius;
+            var Ymax = centerPos.y + yRadius;
+            if (x > Xmax)
+            {
+                x = Xmax;
+            }
+            else if (x < Xmin)
+            {
+                x = Xmin;
+            }
+            else if (y > Ymax)
+            {
+                y = Ymax;
+            }
+            else if (y < Ymin)
+            {
+                y = Ymin;
+            }
 
-            // parts[currentPart].transform.position = new Vector3(clampedX, clampedY, 0f);
-            parts[currentPart].transform.Translate(new Vector3(clampedX, clampedY, 0f));
+            //creates a border to show the bounds of the controllers
+            Debug.DrawLine(
+                new Vector3(Xmin, Ymin, 0f),
+                new Vector3(Xmax, Ymin, 0f), Color.red, .05f);
+            Debug.DrawLine(
+                new Vector3(Xmin, Ymax, 0f),
+                new Vector3(Xmax, Ymax, 0f), Color.red, .05f);
+            Debug.DrawLine(
+                new Vector3(Xmin, Ymin, 0f),
+                new Vector3(Xmin, Ymax, 0f), Color.blue, .05f);
+            Debug.DrawLine(
+                new Vector3(Xmax, Ymin, 0f),
+                new Vector3(Xmax, Ymax, 0f), Color.blue, .05f);
+
+            parts[currentPart].transform.position = new Vector3(x, y, 0f);
         }
-        
     }
 
     public void SwapPart()
