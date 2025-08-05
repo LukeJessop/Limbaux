@@ -5,16 +5,27 @@ using UnityEngine;
 
 public class MovementPhysics : MonoBehaviour
 {
-    private Rigidbody rb;
+    private Rigidbody mainRigidBody;
+    private Rigidbody apendageRigidBody;
+    private FollowMouse followMouse;
+
+    private int currentPart;
     // Start is called before the first frame update
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        followMouse = GetComponent<FollowMouse>();
+        currentPart = followMouse.currentPart;
+        apendageRigidBody = followMouse.rb[currentPart];
+        mainRigidBody = GetComponent<Rigidbody>();
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        // transform.rotation = Quaternion.Euler(0f, 0f, transform.rotation.eulerAngles.z);
-        Debug.Log(other.gameObject.name);
+        
+    }
+
+    private void OnCollisionStay(Collision other)
+    {
+        mainRigidBody.velocity = -1 * apendageRigidBody.velocity;
     }
 }
