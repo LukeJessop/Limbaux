@@ -5,7 +5,7 @@ using UnityEngine;
 public class InitializePosition : MonoBehaviour
 {
     public Transform constraint;
-    void Start()
+    void Update()
     {
         transform.position = constraint.position;
     }

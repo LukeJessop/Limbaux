@@ -5,27 +5,34 @@ using UnityEngine;
 
 public class MovementPhysics : MonoBehaviour
 {
-    private Rigidbody mainRigidBody;
-    private Rigidbody apendageRigidBody;
+    private Rigidbody rb;
+    public GameObject controller;
+    private Rigidbody controllerRb;
     private FollowMouse followMouse;
 
-    private int currentPart;
     // Start is called before the first frame update
     void Start()
     {
-        followMouse = GetComponent<FollowMouse>();
-        currentPart = followMouse.currentPart;
-        apendageRigidBody = followMouse.rb[currentPart];
-        mainRigidBody = GetComponent<Rigidbody>();
+        controllerRb = controller.GetComponent<Rigidbody>();
+        followMouse = controller.GetComponent<FollowMouse>();
+    }
+
+    private void Update()
+    {
     }
 
     private void OnCollisionEnter(Collision other)
     {
-        
     }
 
     private void OnCollisionStay(Collision other)
     {
-        mainRigidBody.velocity = -1 * apendageRigidBody.velocity;
+        Debug.Log(gameObject.name + " is stay");
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            followMouse.parts[followMouse.currentPart].transform.position = other.contacts[0].point;
+        }
+
+        controllerRb.AddForce(-followMouse.mouseControl, ForceMode.Force);
     }
 }

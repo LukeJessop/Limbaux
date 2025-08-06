@@ -10,6 +10,8 @@ public class FindCenter : MonoBehaviour
     
     void Update()
     {
+        
+        //fix this to use rigid body physics? or just remove :D
         avgX = (parts[0].position.x + parts[1].position.x) / 2f;
         avgY = (parts[0].position.y + parts[1].position.y) / 2f;
         
