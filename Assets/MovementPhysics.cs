@@ -6,15 +6,12 @@ using UnityEngine;
 public class MovementPhysics : MonoBehaviour
 {
     private Rigidbody rb;
-    public GameObject controller;
-    private Rigidbody controllerRb;
-    private FollowMouse followMouse;
+    public Rigidbody controllerRb;
 
     // Start is called before the first frame update
     void Start()
     {
-        controllerRb = controller.GetComponent<Rigidbody>();
-        followMouse = controller.GetComponent<FollowMouse>();
+        rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
@@ -27,12 +24,10 @@ public class MovementPhysics : MonoBehaviour
 
     private void OnCollisionStay(Collision other)
     {
-        Debug.Log(gameObject.name + " is stay");
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            followMouse.parts[followMouse.currentPart].transform.position = other.contacts[0].point;
-        }
-
-        controllerRb.AddForce(-followMouse.mouseControl, ForceMode.Force);
+        var x = Input.GetAxis("Mouse X") * 5f;
+        var y = Input.GetAxis("Mouse Y") * 5f;
+        var mouseControl = new Vector3(x, y, 0);
+        Debug.Log(controllerRb + " is stay");
+        controllerRb.AddForce(-mouseControl, ForceMode.Force);
     }
 }

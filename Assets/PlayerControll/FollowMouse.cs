@@ -39,7 +39,7 @@ public class FollowMouse : MonoBehaviour
         y = Input.GetAxis("Mouse Y") * sense;
         mouseControl = new Vector3(x, y, 0);
         var bodyVelocity = mainRb.velocity;
-        rb[currentPart].AddForce(mouseControl , ForceMode.Force);
+        rb[currentPart].AddForce(mouseControl, ForceMode.Force);
     }
 
     public void SwapPart()
